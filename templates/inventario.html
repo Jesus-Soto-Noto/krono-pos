@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRONO POS - Inventario Total</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+  <link rel="stylesheet" href="/static/css/style.css?v=2.1">
+</head>
+<body>
+
+  <div class="app-layout no-print">
+
+    <!-- SIDEBAR FLOTANTE BLANCO (ESTILO EXACTO FINA PARTNER) -->
+    <aside class="app-sidebar no-print">
+      <div>
+        <a href="/" class="sidebar-brand">
+          <img src="/static/img/logo.svg" alt="KRONO Logo" class="brand-logo-img">
+          <div>
+            <div class="brand-app-name">
+              <span>KRONO POS</span>
+              <span class="brand-tag">PRO</span>
+            </div>
+            <div class="brand-business-sub" title="{{ config.nombre_negocio }}">{{ config.nombre_negocio }}</div>
+          </div>
+        </a>
+
+        <!-- ETIQUETA MÓDULOS -->
+        <div class="sidebar-section-label">MÓDULOS</div>
+
+        <nav class="sidebar-nav">
+          <a href="/" class="sidebar-item">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span>Punto de Venta</span>
+            </div>
+            <svg class="sidebar-chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+          <!-- GRUPO INVENTARIO DESPLEGABLE -->
+          <div class="sidebar-group">
+            <button type="button" class="sidebar-item active" onclick="toggleSubmenu(event)">
+              <div class="sidebar-item-content">
+                <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <span>Inventario</span>
+              </div>
+              <svg class="sidebar-chevron-svg" id="invArrow" style="transform: rotate(90deg); transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <div class="sidebar-submenu" id="invSubmenu" style="display: flex;">
+              <a href="/carga-rapida" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Carga Rápida</span>
+              </a>
+              <a href="/inventario" class="submenu-item {% if default_tab != 'precios' and active_page != 'precios' %}active{% endif %}">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span>Inventario Total</span>
+              </a>
+              <a href="/precios" class="submenu-item {% if default_tab == 'precios' or active_page == 'precios' %}active{% endif %}">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <span>Precios</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- GRUPO CIERRE DE CAJA DESPLEGABLE -->
+          <div class="sidebar-group">
+            <button type="button" class="sidebar-item" onclick="toggleCierreSubmenu(event)">
+              <div class="sidebar-item-content">
+                <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h12"/></svg>
+                <span>Cierre de Caja</span>
+              </div>
+              <svg class="sidebar-chevron-svg" id="cierreArrow" style="transform: rotate(0deg); transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <div class="sidebar-submenu" id="cierreSubmenu" style="display: none;">
+              <a href="/reportes" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Cierre de Hoy</span>
+              </a>
+              <a href="/reportes/historial" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><polyline points="12 7 12 12 15 15"/></svg>
+                <span>Historial</span>
+              </a>
+            </div>
+          </div>
+                  <a href="/configuracion" class="sidebar-item">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Configuración</span>
+            </div>
+            <svg class="sidebar-chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-bcv-box">
+          <div class="bcv-title-row">
+            <span style="display: flex; align-items: center; gap: 4px;">
+              <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Tasa BCV Oficial
+            </span>
+          </div>
+          <div class="bcv-rate-value">Bs. {{ config.tasa_bcv }}</div>
+        </div>
+        <div class="sidebar-user-card">
+          <svg class="flaticon-sm" style="color: #10b981;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5v14M7 5v14M11 5v14M15 5v14M19 5v14M21 5v14"/></svg>
+          <span style="font-weight: 700; font-size: 0.72rem; color: #334155;">Lector USB Activo</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE INVENTARIO TOTAL FULL-WIDTH FLOTANTE -->
+    <main class="inventario-full-wrapper">
+
+      <!-- CABECERA -->
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 style="font-size: 1.15rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 8px;"><svg class="flaticon" style="color: #2563eb;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> <span>Inventario Total</span></h1>
+          <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 1px;">
+            Control de existencias, precios al mayor y reposición de mercancía.
+          </p>
+        </div>
+
+        <a href="/carga-rapida" class="btn-checkout-primary" style="padding: 6px 12px; font-size: 0.76rem; text-decoration: none;">
+          <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> <span>Nueva Carga Rápida</span>
+        </a>
+      </div>
+
+      <!-- SELECTOR DE PESTAÑAS: STOCK VS PRECIOS -->
+      <div style="display: flex; gap: 8px; margin-top: 10px; margin-bottom: 2px;">
+        <button type="button" class="report-tab-btn {% if default_tab != 'precios' %}active{% endif %}" id="tabBtnStock" onclick="switchInvTab('stock')" style="display: flex; align-items: center; gap: 6px;">
+          <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          <span>Existencias y Stock</span>
+        </button>
+        <button type="button" class="report-tab-btn {% if default_tab == 'precios' %}active{% endif %}" id="tabBtnPrecios" onclick="switchInvTab('precios')" style="display: flex; align-items: center; gap: 6px;">
+          <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          <span>Panel de Precios</span>
+        </button>
+      </div>
+
+      <!-- FILA DE KPIS -->
+      <div class="inv-stats-row">
+        <div class="inv-stat-card" style="border-left: 3px solid #2563eb;">
+          <span class="stat-label">Total Productos</span>
+          <div class="stat-value" id="statTotalProds" style="color: #2563eb;">0</div>
+        </div>
+        <div class="inv-stat-card" style="border-left: 3px solid #10b981;">
+          <span class="stat-label">Paquetes en Stock</span>
+          <div class="stat-value" id="statTotalPaquetes" style="color: #059669;">0</div>
+        </div>
+        <div class="inv-stat-card" style="border-left: 3px solid #0891b2;">
+          <span class="stat-label">Valor del Stock</span>
+          <div class="stat-value" id="statValorInventario" style="color: #0891b2;">$0.00</div>
+        </div>
+        <div class="inv-stat-card" style="border-left: 3px solid #ef4444;">
+          <span class="stat-label">Stock Bajo</span>
+          <div class="stat-value" id="statStockBajo" style="color: #dc2626;">0</div>
+        </div>
+      </div>
+
+      <!-- TABLA FLOTANTE -->
+      <div class="inv-table-card-full">
+        <div class="inv-table-controls">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="search-box-compact" style="width: 240px;">
+              <span class="search-icon" style="display: flex; align-items: center;"><svg class="flaticon-sm" style="color: #94a3b8;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+              <input type="text" id="invSearchInput" class="search-input-compact" placeholder="Buscar por nombre o código..." oninput="filterTable()">
+            </div>
+            <select id="invCatFilter" class="form-control" style="width: 150px; padding: 5px 8px; font-size: 0.78rem;" onchange="filterTable()">
+              <option value="Todos">Todas las categorías</option>
+              <option value="Chocolates">Chocolates</option>
+              <option value="Chupetas">Chupetas</option>
+              <option value="Gomitas">Gomitas</option>
+              <option value="Galletas">Galletas</option>
+              <option value="Caramelos">Caramelos</option>
+              <option value="Snacks">Snacks</option>
+              <option value="General">General</option>
+            </select>
+            <select id="invStatusFilter" class="form-control" style="width: 140px; padding: 5px 8px; font-size: 0.78rem; display: none;" onchange="filterTable()">
+              <option value="Todos">Todos los estados</option>
+              <option value="1" selected>Solo Activos</option>
+              <option value="0">Solo Desactivados</option>
+            </select>
+          </div>
+
+          <span style="font-size: 0.74rem; font-weight: 700; color: #2563eb;" id="tableCountBadge">Cargando...</span>
+        </div>
+
+        <div style="flex: 1; overflow-y: auto;">
+          <table class="inv-full-table">
+            <thead id="inventoryTableHead">
+              <!-- Renderizado dinámico de columnas según pestaña activa -->
+            </thead>
+            <tbody id="inventoryTableBody">
+              <!-- Renderizado dinámico -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL RÁPIDO PARA SUMAR STOCK (AMPLIO Y ESPACIOSO) -->
+  <div class="modal-backdrop" id="addStockModal">
+    <div class="modal-card" style="width: 95%; max-width: 480px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);">
+      <div class="modal-header" style="padding: 12px 18px;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <svg class="flaticon" style="color: #2563eb;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          <span style="font-size: 1rem; font-weight: 800;">Ingreso de Mercancía</span>
+        </div>
+        <button class="btn-close-modal" onclick="closeAddStockModal()">✕</button>
+      </div>
+      
+      <div class="modal-body" style="padding: 18px 22px; overflow-x: hidden; gap: 14px;">
+        <!-- INFORMACIÓN DEL PRODUCTO -->
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-left: 3.5px solid #2563eb; border-radius: var(--radius-sm); padding: 10px 14px;">
+          <div id="addStockProdName" style="font-weight: 800; color: #1e293b; font-size: 0.95rem;"></div>
+          <div id="addStockDetails" style="font-size: 0.76rem; color: #64748b; margin-top: 2px;"></div>
+        </div>
+
+        <!-- CANTIDADES RECIBIDAS -->
+        <div class="grid-2" style="gap: 14px;">
+          <div class="form-group">
+            <label style="font-size: 0.78rem; font-weight: 700; color: #334155;">Cajas recibidas:</label>
+            <input type="number" id="addStockCajas" class="form-control" value="1" min="0" oninput="calcAddStockPreview()" style="font-size: 0.92rem; font-weight: 700;">
+          </div>
+          <div class="form-group">
+            <label style="font-size: 0.78rem; font-weight: 700; color: #334155;">Paquetes sueltos:</label>
+            <input type="number" id="addStockPaquetes" class="form-control" value="0" min="0" oninput="calcAddStockPreview()" style="font-size: 0.92rem; font-weight: 700;">
+          </div>
+        </div>
+
+        <!-- PREVIEW DEL TOTAL A SUMAR -->
+        <div id="addStockTotalPreview" style="font-size: 0.76rem; font-weight: 800; color: #1d4ed8; background: #eff6ff; border: 1px solid #bfdbfe; padding: 7px 12px; border-radius: var(--radius-sm); text-align: center;">
+          Total a sumar: 0 paquetes
+        </div>
+
+        <!-- PROTECCIÓN POR CONTRASEÑA -->
+        <div class="form-group" style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: var(--radius-sm); padding: 12px 14px;">
+          <label style="display: flex; align-items: center; gap: 6px; color: #991b1b; font-weight: 800; font-size: 0.78rem;">
+            <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Clave de Autorización (Supervisor) *</span>
+          </label>
+          <input type="password" id="addStockPassword" class="form-control" placeholder="••••••••" required autocomplete="new-password" style="background: #ffffff; margin-top: 6px; font-size: 0.95rem; letter-spacing: 2px;" onkeydown="if(event.key==='Enter') submitAddStock()">
+          <small style="font-size: 0.7rem; color: #b91c1c; display: block; margin-top: 4px;">Solo el encargado o supervisor puede autorizar el aumento de mercancía.</small>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 12px 22px;">
+        <button class="btn-checkout-primary" style="width: 100%; padding: 11px; font-size: 0.92rem; font-weight: 800; border-radius: var(--radius-sm); justify-content: center;" onclick="submitAddStock()">
+          <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Autorizar y Sumar al Stock</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PARA EDITAR PRECIOS Y DATOS DEL PRODUCTO -->
+  <div class="modal-backdrop" id="editPriceModal">
+    <div class="modal-card" style="width: 95%; max-width: 580px; max-height: 94vh; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);">
+      <div class="modal-header" style="padding: 10px 18px; flex-shrink: 0;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <svg class="flaticon" style="color: #2563eb;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span style="font-size: 0.95rem; font-weight: 800;">Modificar Precios y Producto</span>
+        </div>
+        <button class="btn-close-modal" onclick="closeEditPriceModal()">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 14px 18px; overflow-y: auto; overflow-x: hidden; gap: 10px; flex: 1;">
+        <input type="hidden" id="editProdId">
+
+        <div class="form-group">
+          <label style="font-size: 0.74rem; font-weight: 700; color: #334155;">Nombre del Producto *</label>
+          <input type="text" id="editNombre" class="form-control" required style="font-size: 0.86rem; font-weight: 700; padding: 7px 10px;">
+        </div>
+
+        <div class="grid-2" style="gap: 10px;">
+          <div class="form-group">
+            <label style="font-size: 0.74rem; font-weight: 700; color: #334155;">Código de Barra *</label>
+            <input type="text" id="editCodigo" class="form-control" required style="font-family: monospace; font-size: 0.84rem; font-weight: 700; padding: 7px 10px;">
+          </div>
+          <div class="form-group">
+            <label style="font-size: 0.74rem; font-weight: 700; color: #334155;">Categoría</label>
+            <select id="editCategoria" class="form-control" style="font-size: 0.82rem; padding: 7px 10px;">
+              <option value="Chocolates">Chocolates</option>
+              <option value="Chupetas">Chupetas</option>
+              <option value="Gomitas">Gomitas</option>
+              <option value="Galletas">Galletas</option>
+              <option value="Caramelos">Caramelos</option>
+              <option value="Snacks">Snacks</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BLOQUE DE PRECIOS Y UNIDADES EN GRID DE 2 COLUMNAS (100% RESPONSIVE) -->
+        <div style="background: #f8fafc; border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 0.76rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 5px;">
+            <svg class="flaticon-sm" style="color: #2563eb;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            <span>Estructura de Precios (USD)</span>
+          </div>
+
+          <!-- FILA 1: PRECIO PAQUETE Y PRECIO CAJA -->
+          <div class="grid-2" style="gap: 12px;">
+            <div class="form-group">
+              <label style="font-size: 0.73rem; font-weight: 800; color: #15803d;">Precio Paquete (Detal $):</label>
+              <input type="number" step="0.01" id="editPrecioPaquete" class="form-control" min="0" required oninput="calcEditPricePreview()" style="font-weight: 800; font-size: 0.92rem; color: #15803d; padding: 7px 10px;">
+            </div>
+            <div class="form-group">
+              <label style="font-size: 0.73rem; font-weight: 800; color: #1d4ed8;">Precio Caja (Mayor $):</label>
+              <input type="number" step="0.01" id="editPrecioCaja" class="form-control" min="0" required oninput="calcEditPricePreview()" style="font-weight: 800; font-size: 0.92rem; color: #1d4ed8; padding: 7px 10px;">
+            </div>
+          </div>
+
+          <!-- FILA 2: UNIDADES POR CAJA Y STOCK MÍNIMO -->
+          <div class="grid-2" style="gap: 12px;">
+            <div class="form-group">
+              <label style="font-size: 0.73rem; font-weight: 700; color: #475569;">Unidades que trae la Caja:</label>
+              <input type="number" id="editUnidadesPorCaja" class="form-control" min="1" required oninput="calcEditPricePreview()" style="font-weight: 800; font-size: 0.88rem; padding: 7px 10px;">
+            </div>
+            <div class="form-group">
+              <label style="font-size: 0.73rem; font-weight: 700; color: #475569;">Stock Mínimo (Alerta):</label>
+              <input type="number" id="editStockMinimo" class="form-control" min="0" value="10" style="font-weight: 700; font-size: 0.88rem; padding: 7px 10px;">
+            </div>
+          </div>
+
+          <!-- Preview de Relación Mayor / Detal -->
+          <div id="editPricePreview" style="font-size: 0.72rem; font-weight: 700; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 6px 10px; border-radius: var(--radius-sm); text-align: center;">
+            Cálculo de relación mayor/detal...
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 0.74rem; font-weight: 700; color: #334155;">Estado en Punto de Venta:</label>
+          <select id="editActivo" class="form-control" style="padding: 7px 10px; font-size: 0.82rem;">
+            <option value="1">Activo (Habilitado para cobro en el POS)</option>
+            <option value="0">Desactivado (Oculto del POS)</option>
+          </select>
+        </div>
+
+        <!-- AUTORIZACIÓN POR CONTRASEÑA SUPERVISOR -->
+        <div class="form-group" style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: var(--radius-sm); padding: 8px 12px;">
+          <label style="display: flex; align-items: center; gap: 6px; color: #991b1b; font-weight: 800; font-size: 0.74rem;">
+            <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Clave de Autorización (Supervisor / Admin) *</span>
+          </label>
+          <input type="password" id="editPassword" class="form-control" placeholder="••••••••" required autocomplete="new-password" style="background: #ffffff; margin-top: 4px; font-size: 0.88rem; letter-spacing: 2px; padding: 6px 10px;" onkeydown="if(event.key==='Enter') submitEditPrice()">
+          <small style="font-size: 0.68rem; color: #b91c1c; display: block; margin-top: 3px;">La edición de precios de mercancía requiere la clave configurada por el administrador.</small>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 10px 18px; display: flex; gap: 10px; flex-shrink: 0;">
+        <button class="btn-clean-cart" onclick="closeEditPriceModal()" style="flex: 1; padding: 8px; font-size: 0.84rem; font-weight: 700;">Cancelar</button>
+        <button class="btn-checkout-primary" style="flex: 2; padding: 8px; font-size: 0.88rem; font-weight: 800; justify-content: center;" onclick="submitEditPrice()">
+          <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span>Guardar Cambios</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PARA CONFIRMAR ACTIVACIÓN / DESACTIVACIÓN -->
+  <div class="modal-backdrop" id="toggleStatusModal">
+    <div class="modal-card" style="width: 95%; max-width: 440px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);">
+      <div class="modal-header" style="padding: 12px 18px;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <svg class="flaticon" id="toggleStatusIcon" style="color: #dc2626;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <span id="toggleStatusModalTitle" style="font-size: 1rem; font-weight: 800;">Cambiar Estado</span>
+        </div>
+        <button class="btn-close-modal" onclick="closeToggleStatusModal()">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding: 16px 20px; gap: 12px;">
+        <input type="hidden" id="toggleProdId">
+        <p id="toggleStatusMsg" style="font-size: 0.85rem; color: #1e293b; line-height: 1.4; margin: 0;"></p>
+
+        <!-- Contraseña supervisor -->
+        <div class="form-group" style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: var(--radius-sm); padding: 12px 14px; margin-top: 4px;">
+          <label style="display: flex; align-items: center; gap: 6px; color: #991b1b; font-weight: 800; font-size: 0.78rem;">
+            <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Clave de Autorización (Supervisor / Admin) *</span>
+          </label>
+          <input type="password" id="toggleStatusPassword" class="form-control" placeholder="••••••••" required autocomplete="new-password" style="background: #ffffff; margin-top: 6px; font-size: 0.95rem; letter-spacing: 2px;" onkeydown="if(event.key==='Enter') submitToggleStatus()">
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 12px 20px; display: flex; gap: 10px;">
+        <button class="btn-clean-cart" onclick="closeToggleStatusModal()" style="flex: 1; padding: 10px; font-weight: 700;">Cancelar</button>
+        <button id="btnConfirmToggleStatus" class="btn-checkout-primary" style="flex: 2; padding: 10px; font-weight: 800; justify-content: center; background: #dc2626;" onclick="submitToggleStatus()">
+          <span>Confirmar y Autorizar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    window.DEFAULT_INV_TAB = "{{ default_tab }}";
+    
+    function toggleCierreSubmenu(e) {
+      if (e) e.preventDefault();
+      const sub = document.getElementById('cierreSubmenu');
+      const arrow = document.getElementById('cierreArrow');
+      if (!sub) return;
+      if (sub.style.display === 'none') {
+        sub.style.display = 'flex';
+        if (arrow) arrow.style.transform = 'rotate(90deg)';
+      } else {
+        sub.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function toggleSubmenu(e) {
+      if (e) e.preventDefault();
+      const sub = document.getElementById('invSubmenu');
+      const arrow = document.getElementById('invArrow');
+      if (sub.style.display === 'none') {
+        sub.style.display = 'flex';
+        if (arrow) arrow.style.transform = 'rotate(90deg)';
+      } else {
+        sub.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+  </script>
+  <script src="/static/js/inventario.js"></script>
+</body>
+</html>

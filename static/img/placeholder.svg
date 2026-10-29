@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <rect width="120" height="120" fill="#f8fafc" rx="12"/>
+  <g transform="translate(30, 30)" stroke="#2563eb" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Centro del caramelo -->
+    <circle cx="30" cy="30" r="18" fill="#eff6ff"/>
+    <!-- Detalles de envoltura -->
+    <path d="M17 17 L5 5 M13 22 L3 16 M22 13 L16 3"/>
+    <path d="M43 43 L55 55 M47 38 L57 44 M38 47 L44 57"/>
+    <!-- Brillo interno -->
+    <path d="M22 25 Q30 18 38 25" stroke="#3b82f6" stroke-width="2.5"/>
+  </g>
+  <text x="60" y="102" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="700" fill="#94a3b8">KRONO POS</text>
+</svg>

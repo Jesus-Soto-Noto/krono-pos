@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRONO POS - Cierre de Caja y Arqueo</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/logo.svg">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <style>
+    .report-main-content {
+      flex: 1;
+      height: calc(100vh - 20px);
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .report-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+
+    .report-top-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    .arqueo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .arqueo-card {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .arqueo-title {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .arqueo-amount-usd {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #1e293b;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .arqueo-amount-bs {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #0284c7;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .section-card-compact {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .section-compact-title {
+      font-size: 0.86rem;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    .compact-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    .compact-table th {
+      background: #f8fafc;
+      padding: 7px 10px;
+      font-weight: 800;
+      color: #475569;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .compact-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .compact-table tr:hover {
+      background: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+
+    <!-- SIDEBAR FLOTANTE BLANCO (ESTILO EXACTO FINA PARTNER) -->
+    <aside class="app-sidebar no-print">
+      <div>
+        <a href="/" class="sidebar-brand">
+          <img src="/static/img/logo.svg" alt="KRONO Logo" class="brand-logo-img">
+          <div>
+            <div class="brand-app-name">
+              <span>KRONO POS</span>
+              <span class="brand-tag">PRO</span>
+            </div>
+            <div class="brand-business-sub" title="{{ config.nombre_negocio }}">{{ config.nombre_negocio }}</div>
+          </div>
+        </a>
+
+        <!-- ETIQUETA MÓDULOS -->
+        <div class="sidebar-section-label">MÓDULOS</div>
+
+        <nav class="sidebar-nav">
+          <a href="/" class="sidebar-item">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span>Punto de Venta</span>
+            </div>
+            <svg class="sidebar-chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+          <!-- GRUPO INVENTARIO DESPLEGABLE -->
+          <div class="sidebar-group">
+            <button type="button" class="sidebar-item" onclick="toggleSubmenu(event)">
+              <div class="sidebar-item-content">
+                <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <span>Inventario</span>
+              </div>
+              <svg class="sidebar-chevron-svg" id="invArrow" style="transform: rotate(0deg); transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <div class="sidebar-submenu" id="invSubmenu" style="display: none;">
+              <a href="/carga-rapida" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Carga Rápida</span>
+              </a>
+              <a href="/inventario" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span>Inventario Total</span>
+              </a>
+              <a href="/precios" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <span>Precios</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- GRUPO CIERRE DE CAJA DESPLEGABLE (HOY vs HISTORIAL) -->
+          <div class="sidebar-group">
+            <button type="button" class="sidebar-item active" onclick="toggleCierreSubmenu(event)">
+              <div class="sidebar-item-content">
+                <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h12"/></svg>
+                <span>Cierre de Caja</span>
+              </div>
+              <svg class="sidebar-chevron-svg" id="cierreArrow" style="transform: rotate(90deg); transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <div class="sidebar-submenu" id="cierreSubmenu" style="display: flex;">
+              <a href="/reportes" class="submenu-item active" id="menuCierreHoy" onclick="switchReportTab('hoy'); return false;">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Cierre de Hoy</span>
+              </a>
+              <a href="/reportes/historial" class="submenu-item" id="menuCierreHistorial" onclick="switchReportTab('historial'); return false;">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><polyline points="12 7 12 12 15 15"/></svg>
+                <span>Historial</span>
+              </a>
+            </div>
+          </div>
+                  <a href="/configuracion" class="sidebar-item">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Configuración</span>
+            </div>
+            <svg class="sidebar-chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-bcv-box">
+          <div class="bcv-title-row">
+            <span style="display: flex; align-items: center; gap: 4px;">
+              <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Tasa BCV Oficial
+            </span>
+          </div>
+          <div class="bcv-rate-value">Bs. {{ config.tasa_bcv }}</div>
+        </div>
+
+        <div class="sidebar-user-card">
+          <svg class="flaticon-sm" style="color: #10b981;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5v14M7 5v14M11 5v14M15 5v14M19 5v14M21 5v14"/></svg>
+          <span style="font-weight: 700; font-size: 0.72rem; color: #334155;">Lector USB Activo</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL FLOTANTE -->
+    <main class="report-main-content" id="printable-report">
+
+      <!-- PESTAÑAS HOY vs HISTORIAL -->
+      <div class="report-tabs-bar no-print">
+        <button type="button" class="report-tab-btn active" id="tabBtnHoy" onclick="switchReportTab('hoy')">
+          <span>Cierre de Hoy</span>
+        </button>
+        <button type="button" class="report-tab-btn" id="tabBtnHistorial" onclick="switchReportTab('historial')">
+          <span>Historial</span>
+        </button>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- VISTA 1: CIERRE DE CAJA HOY                    -->
+      <!-- ============================================== -->
+      <div id="viewCierreHoy" style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="report-header-row">
+          <div>
+            <h2 class="report-top-title">Cierre de Caja & Arqueo del Día</h2>
+            <span style="font-size: 0.72rem; color: var(--text-muted);">Cuadre exacto por método de pago (Hoy)</span>
+          </div>
+
+          <button class="btn-checkout-primary no-print" style="padding: 7px 16px; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 6px;" onclick="imprimirCierre('hoy')">
+            <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <span>Imprimir Cierre Diario</span>
+          </button>
+        </div>
+
+        <!-- ARQUEO DE CAJA POR MÉTODO DE PAGO -->
+        <div class="arqueo-grid" id="arqueoGrid">
+          <!-- Renderizado dinámico -->
+        </div>
+
+        <!-- SECCIÓN 1: PRODUCTOS VENDIDOS HOY -->
+        <div class="section-card-compact">
+          <div class="section-compact-title">Desglose de lo que ha salido hoy (Ventas de Hoy)</div>
+          <div style="overflow-x: auto;">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Modo</th>
+                  <th>Cantidad</th>
+                  <th>Stock Restado</th>
+                  <th>Total Generado</th>
+                </tr>
+              </thead>
+              <tbody id="soldProductsTableBody">
+                <!-- Renderizado dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 2: INVENTARIO REMANENTE AL FINAL DEL DÍA -->
+        <div class="section-card-compact">
+          <div class="section-compact-title">Stock que queda en almacén al cierre</div>
+          <div style="overflow-x: auto;">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Producto</th>
+                  <th>Categoría</th>
+                  <th>Por Caja</th>
+                  <th>Stock Paquetes</th>
+                  <th>Equivalencia en Cajas</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="remainingStockTableBody">
+                <!-- Renderizado dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 3: TICKETS EMITIDOS HOY (CONTROL Y ANULACIÓN) -->
+        <div class="section-card-compact">
+          <div class="section-compact-title">Tickets Emitidos Hoy (Control de Cobros y Anulación)</div>
+          <div style="overflow-x: auto;">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Hora</th>
+                  <th>Método de Pago</th>
+                  <th>Total USD</th>
+                  <th>Total Bs</th>
+                  <th>Estado</th>
+                  <th style="text-align: center;" class="no-print">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="todayTicketsTableBody">
+                <!-- Renderizado dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- VISTA 2: HISTORIAL DE CIERRES ANTERIORES       -->
+      <!-- ============================================== -->
+      <div id="viewHistorial" style="display: none; flex-direction: column; gap: 12px;">
+        <div class="history-filter-bar no-print">
+          <div class="history-pills">
+            <span style="font-size: 0.76rem; font-weight: 700; color: #475569;">Atajos:</span>
+            <button type="button" class="history-pill-btn" onclick="selectQuickHistory('ayer')">Ayer</button>
+            <button type="button" class="history-pill-btn" onclick="selectQuickHistory('antier')">Anteayer</button>
+            <button type="button" class="history-pill-btn active" onclick="loadHistorialList()">Ver Todos</button>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="historyDatePicker" style="font-size: 0.76rem; font-weight: 700; color: #475569;">Consultar Fecha:</label>
+            <input type="date" id="historyDatePicker" class="form-control" style="padding: 4px 8px; font-size: 0.78rem; font-weight: 700;" onchange="consultarFechaEspecifica(this.value)">
+          </div>
+        </div>
+
+        <!-- RESUMEN HISTÓRICO DE DÍAS -->
+        <div class="section-card-compact" id="historySummaryCard">
+          <div class="section-compact-title">Historial de Cierres Diarios Registrados</div>
+          <div style="overflow-x: auto;">
+            <table class="compact-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Tickets</th>
+                  <th>Total USD</th>
+                  <th>Total Bs</th>
+                  <th>Resumen de Métodos</th>
+                  <th style="text-align: center;">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <!-- Renderizado dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- DETALLE DEL DÍA SELECCIONADO -->
+        <div id="historyDayDetailContainer" style="display: none; flex-direction: column; gap: 12px;">
+          <div class="report-header-row">
+            <div>
+              <h2 class="report-top-title" id="historyDetailTitle">Cierre del Día</h2>
+              <span style="font-size: 0.72rem; color: var(--text-muted);" id="historyDetailSubtitle">Detalle completo de arqueo y ventas</span>
+            </div>
+
+            <div style="display: flex; gap: 8px;" class="no-print">
+              <button class="btn-checkout-primary" style="padding: 6px 12px; font-size: 0.76rem; background: #64748b; display: inline-flex; align-items: center; gap: 6px;" onclick="cerrarDetalleDia()">
+                <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <span>Volver a la Lista</span>
+              </button>
+              <button class="btn-checkout-primary" style="padding: 6px 14px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 6px;" onclick="imprimirCierre('historial')">
+                <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span>Imprimir Cierre</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- ARQUEO GRID HISTÓRICO -->
+          <div class="arqueo-grid" id="historyArqueoGrid"></div>
+
+          <!-- PRODUCTOS VENDIDOS EN ESA FECHA -->
+          <div class="section-card-compact">
+            <div class="section-compact-title">Productos Vendidos en esta Fecha</div>
+            <div style="overflow-x: auto;">
+              <table class="compact-table">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Modo</th>
+                    <th>Cantidad</th>
+                    <th>Stock Restado</th>
+                    <th>Total Generado</th>
+                  </tr>
+                </thead>
+                <tbody id="historyProductsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TICKETS EMITIDOS EN ESA FECHA -->
+          <div class="section-card-compact">
+            <div class="section-compact-title">Tickets y Cobros Realizados</div>
+            <div style="overflow-x: auto;">
+              <table class="compact-table">
+                <thead>
+                  <tr>
+                    <th>Ticket</th>
+                    <th>Hora</th>
+                    <th>Método de Pago</th>
+                    <th>Monto Recibido</th>
+                    <th>Total USD</th>
+                    <th>Total Bs</th>
+                    <th>Estado</th>
+                    <th style="text-align: center;" class="no-print">Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="historyTicketsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- MODAL DE ANULACIÓN DE TICKET (CLAVE SUPERVISOR) -->
+  <div class="modal-backdrop" id="anularTicketModal">
+    <div class="modal-card" style="width: 95%; max-width: 440px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);">
+      <div class="modal-header" style="padding: 12px 18px;">
+        <div class="modal-title" style="display: flex; align-items: center; gap: 8px; color: #b91c1c;">
+          <svg class="flaticon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <span style="font-weight: 800;">Anular Ticket de Venta</span>
+        </div>
+        <button class="btn-close-modal" onclick="closeAnularTicketModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 18px 20px; gap: 12px;">
+        <div style="background: #fef2f2; border: 1.5px solid #fecaca; border-radius: var(--radius-sm); padding: 12px 14px;">
+          <div id="anularTicketInfo" style="font-weight: 800; font-size: 0.95rem; color: #991b1b;"></div>
+          <p style="font-size: 0.74rem; color: #b91c1c; margin-top: 4px;">
+            ⚠️ Al anular el ticket, el dinero se restará del arqueo del día y los dulces vendidos se reincorporarán automáticamente al inventario.
+          </p>
+        </div>
+
+        <div class="form-group" style="margin-top: 4px;">
+          <label style="display: flex; align-items: center; gap: 6px; color: #991b1b; font-weight: 800; font-size: 0.78rem;">
+            <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Clave de Autorización (Supervisor) *</span>
+          </label>
+          <input type="password" id="anularPasswordInput" class="form-control" placeholder="••••••••" required autocomplete="new-password" style="font-size: 0.95rem; margin-top: 4px; letter-spacing: 2px;" onkeydown="if(event.key==='Enter') submitAnularTicket()">
+          <small style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">Solo el supervisor puede anular tickets emitidos.</small>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 12px 20px;">
+        <button class="btn-checkout-primary" style="width: 100%; background: #dc2626; border-color: #b91c1c; font-weight: 800; justify-content: center;" onclick="submitAnularTicket()">
+          <span>Confirmar Anulación y Reponer Stock</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/static/js/reportes.js"></script>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KRONO POS - Configuración y Respaldos</title>
+  <link rel="icon" type="image/svg+xml" href="/static/img/favicon.svg">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <div class="app-layout no-print">
+
+    <!-- SIDEBAR FLOTANTE BLANCO (ESTILO EXACTO FINA PARTNER) -->
+    <aside class="app-sidebar no-print">
+      <div>
+        <a href="/" class="sidebar-brand">
+          <img src="/static/img/logo.svg" alt="KRONO Logo" class="brand-logo-img">
+          <div>
+            <div class="brand-app-name">
+              <span>KRONO POS</span>
+              <span class="brand-tag">PRO</span>
+            </div>
+            <div class="brand-business-sub" title="{{ config.nombre_negocio }}">{{ config.nombre_negocio }}</div>
+          </div>
+        </a>
+
+        <!-- ETIQUETA MÓDULOS -->
+        <div class="sidebar-section-label">MÓDULOS</div>
+
+        <nav class="sidebar-nav">
+          <a href="/" class="sidebar-item">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+              <span>Punto de Venta</span>
+            </div>
+            <svg class="sidebar-chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+
+          <!-- GRUPO INVENTARIO DESPLEGABLE -->
+          <div class="sidebar-group">
+            <button type="button" class="sidebar-item" onclick="toggleSubmenu(event)">
+              <div class="sidebar-item-content">
+                <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <span>Inventario</span>
+              </div>
+              <svg class="sidebar-chevron-svg" id="invArrow" style="transform: rotate(0deg); transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <div class="sidebar-submenu" id="invSubmenu" style="display: none;">
+              <a href="/carga-rapida" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Carga Rápida</span>
+              </a>
+              <a href="/inventario" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                <span>Inventario Total</span>
+              </a>
+              <a href="/precios" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                <span>Precios</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- GRUPO CIERRE DE CAJA DESPLEGABLE -->
+          <div class="sidebar-group">
+            <button type="button" class="sidebar-item" onclick="toggleCierreSubmenu(event)">
+              <div class="sidebar-item-content">
+                <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M6 12h12"/></svg>
+                <span>Cierre de Caja</span>
+              </div>
+              <svg class="sidebar-chevron-svg" id="cierreArrow" style="transform: rotate(0deg); transition: transform 0.2s;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <div class="sidebar-submenu" id="cierreSubmenu" style="display: none;">
+              <a href="/reportes" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Cierre de Hoy</span>
+              </a>
+              <a href="/reportes/historial" class="submenu-item">
+                <svg class="sub-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/><polyline points="12 7 12 12 15 15"/></svg>
+                <span>Historial</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- BOTÓN CONFIGURACIÓN (ACTIVO) -->
+          <a href="/configuracion" class="sidebar-item active">
+            <div class="sidebar-item-content">
+              <svg class="sidebar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Configuración</span>
+            </div>
+            <svg class="sidebar-chevron-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-bcv-box">
+          <div class="bcv-title-row">
+            <span style="display: flex; align-items: center; gap: 4px;">
+              <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Tasa BCV Oficial
+            </span>
+          </div>
+          <div class="bcv-rate-value">Bs. <span id="bcvRateDisplay">{{ config.tasa_bcv }}</span></div>
+        </div>
+
+        <div class="sidebar-user-card">
+          <svg class="flaticon-sm" style="color: #10b981;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5v14M7 5v14M11 5v14M15 5v14M19 5v14M21 5v14"/></svg>
+          <span style="font-weight: 700; font-size: 0.72rem; color: #334155;">Lector USB Activo</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+    <main class="carga-rapida-wrapper">
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <div>
+          <h1 style="font-size: 1.15rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+            <svg class="flaticon" style="color: #2563eb;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Configuración del Sistema</span>
+          </h1>
+          <p style="font-size: 0.74rem; color: var(--text-muted); margin-top: 1px;">
+            Personaliza los datos del negocio, gestiona la clave de supervisor y activa los respaldos en Telegram y local.
+          </p>
+        </div>
+        <a href="/" class="btn-checkout-primary" style="padding: 6px 12px; font-size: 0.76rem; text-decoration: none;">
+          <span>Ir al Punto de Venta</span>
+        </a>
+      </div>
+
+      <div class="carga-rapida-grid" style="grid-template-columns: 1fr 1fr;">
+
+        <!-- COLUMNA IZQUIERDA -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+
+          <!-- TARJETA 1: DATOS DEL NEGOCIO Y TICKET -->
+          <section class="carga-card-form">
+            <h3 style="font-size: 0.88rem; font-weight: 800; color: #1e293b; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+              <svg class="flaticon-sm" style="color: #2563eb;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span>Datos del Comercio (Encabezado de Ticket)</span>
+            </h3>
+
+            <form id="formNegocio" onsubmit="guardarDatosNegocio(event)" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+              <div class="form-group">
+                <label>Nombre del Negocio / Razón Social *</label>
+                <input type="text" id="cfgNombreNegocio" class="form-control" value="{{ config.nombre_negocio }}" required>
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>RIF / Cédula Fiscal *</label>
+                  <input type="text" id="cfgRif" class="form-control" value="{{ config.rif }}" placeholder="Ej: J-50123456-7" required>
+                </div>
+                <div class="form-group">
+                  <label>Teléfono de Contacto</label>
+                  <input type="text" id="cfgTelefono" class="form-control" value="{{ config.telefono }}" placeholder="0412-5551234">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Dirección Física del Local</label>
+                <input type="text" id="cfgDireccion" class="form-control" value="{{ config.direccion }}" placeholder="Calle Comercio, Local 4...">
+              </div>
+
+              <div class="form-group">
+                <label>Mensaje al Pie del Ticket</label>
+                <input type="text" id="cfgMensajeTicket" class="form-control" value="{{ config.mensaje_ticket }}" placeholder="¡Gracias por su compra!">
+                <small style="font-size: 0.68rem; color: #64748b;">Aparece al final de cada recibo impreso.</small>
+              </div>
+
+              <button type="submit" class="btn-checkout-primary" style="margin-top: 4px; padding: 10px; font-weight: 800;">
+                <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span>Guardar Datos del Negocio</span>
+              </button>
+            </form>
+          </section>
+
+          <!-- TARJETA 2: SEGURIDAD Y CLAVE DE SUPERVISOR -->
+          <section class="carga-card-form" style="border-left: 3.5px solid #dc2626;">
+            <h3 style="font-size: 0.88rem; font-weight: 800; color: #991b1b; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+              <svg class="flaticon-sm" style="color: #dc2626;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Seguridad: Cambiar Clave de Supervisor</span>
+            </h3>
+
+            <p style="font-size: 0.72rem; color: #64748b; margin-top: 6px;">
+              Esta clave protege el aumento de mercancía y la anulación de tickets para evitar fraudes en caja.
+            </p>
+
+            <form id="formClave" onsubmit="cambiarClaveSupervisor(event)" style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+              <div class="form-group">
+                <label>Clave Actual de Supervisor *</label>
+                <input type="password" id="cfgClaveActual" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+              </div>
+
+              <div class="grid-2">
+                <div class="form-group">
+                  <label>Nueva Clave *</label>
+                  <input type="password" id="cfgNuevaClave" class="form-control" placeholder="••••••••" required minlength="4" autocomplete="new-password">
+                </div>
+                <div class="form-group">
+                  <label>Confirmar Nueva Clave *</label>
+                  <input type="password" id="cfgConfirmarClave" class="form-control" placeholder="••••••••" required minlength="4" autocomplete="new-password">
+                </div>
+              </div>
+
+              <button type="submit" class="btn-checkout-primary" style="background: #dc2626; border-color: #b91c1c; margin-top: 4px; padding: 10px; font-weight: 800;">
+                <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Actualizar Clave de Seguridad</span>
+              </button>
+            </form>
+          </section>
+
+        </div>
+
+        <!-- COLUMNA DERECHA: COPIAS DE SEGURIDAD -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+
+          <section class="carga-card-form" style="border-left: 3.5px solid #0284c7;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 8px;">
+              <h3 style="font-size: 0.88rem; font-weight: 800; color: #0369a1; display: flex; align-items: center; gap: 6px;">
+                <svg class="flaticon-sm" style="color: #0284c7;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Copias de Seguridad (Respaldos)</span>
+              </h3>
+              <span style="font-size: 0.68rem; background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 9999px; font-weight: 800;">Protección de Datos</span>
+            </div>
+
+            <!-- SECCIÓN 1: NUBE TELEGRAM -->
+            <div style="margin-top: 10px;">
+              <h4 style="font-size: 0.82rem; font-weight: 800; color: #0369a1; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                <svg class="flaticon-sm" style="color: #0284c7;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span>Respaldo en la Nube (Telegram)</span>
+              </h4>
+
+              {% if telegram_configurado %}
+              <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; color: #166534; font-size: 0.76rem;">
+                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+                  <span>Canal en la nube activo y conectado</span>
+                </div>
+                <p style="font-size: 0.71rem; color: #15803d; margin: 4px 0 0 0;">
+                  El sistema envía una copia íntegra de la base de datos automáticamente al canal privado del negocio al realizar el cierre de caja.
+                </p>
+              </div>
+              {% else %}
+              <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 6px; font-weight: 800; color: #475569; font-size: 0.76rem;">
+                  <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8;"></span>
+                  <span>Canal gestionado por Soporte Técnico</span>
+                </div>
+                <p style="font-size: 0.71rem; color: #64748b; margin: 4px 0 0 0;">
+                  La sincronización se gestiona de forma segura a través de los archivos internos del sistema sin exponer claves al público.
+                </p>
+              </div>
+              {% endif %}
+
+              <button type="button" class="btn-checkout-primary" style="background: #0284c7; padding: 10px; font-weight: 800; width: 100%; justify-content: center;" onclick="enviarCopiaNubeManual()">
+                <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <span id="btnTelegramText">Enviar Copia a la Nube Ahora</span>
+              </button>
+            </div>
+
+            <!-- SECCIÓN 2: LOCAL PENDRIVE -->
+            <div style="border-top: 1px dashed var(--border); margin-top: 16px; padding-top: 14px;">
+              <h4 style="font-size: 0.82rem; font-weight: 800; color: #065f46; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                <svg class="flaticon-sm" style="color: #10b981;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Respaldo Local Físico (Pendrive)</span>
+              </h4>
+
+              <p style="font-size: 0.72rem; color: #64748b; margin-bottom: 10px;">
+                Descarga instantánea de la base de datos <b>confiteria.db</b>. Puedes guardarla en un pendrive para llevarla contigo o protegerte si no hay conexión a internet.
+              </p>
+
+              <a href="/api/backup/descargar" class="btn-checkout-primary" style="background: #059669; padding: 11px; font-size: 0.84rem; font-weight: 800; text-decoration: none; justify-content: center; width: 100%;">
+                <svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Descargar Copia de Seguridad (.db)</span>
+              </a>
+            </div>
+          </section>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script>
+    // Submenús del sidebar
+    function toggleCierreSubmenu(e) {
+      if (e) e.preventDefault();
+      const sub = document.getElementById('cierreSubmenu');
+      const arrow = document.getElementById('cierreArrow');
+      if (!sub) return;
+      if (sub.style.display === 'none') {
+        sub.style.display = 'flex';
+        if (arrow) arrow.style.transform = 'rotate(90deg)';
+      } else {
+        sub.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function toggleSubmenu(e) {
+      if (e) e.preventDefault();
+      const sub = document.getElementById('invSubmenu');
+      const arrow = document.getElementById('invArrow');
+      if (sub.style.display === 'none') {
+        sub.style.display = 'flex';
+        if (arrow) arrow.style.transform = 'rotate(90deg)';
+      } else {
+        sub.style.display = 'none';
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const iconSvg = type === 'success'
+        ? '<svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>'
+        : '<svg class="flaticon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span style="display: flex; align-items: center;">${iconSvg}</span>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.2s ease';
+        setTimeout(() => toast.remove(), 200);
+      }, 2800);
+    }
+
+    // Guardar datos del comercio
+    async function guardarDatosNegocio(e) {
+      e.preventDefault();
+      const nombre_negocio = document.getElementById('cfgNombreNegocio').value.trim();
+      const rif = document.getElementById('cfgRif').value.trim();
+      const telefono = document.getElementById('cfgTelefono').value.trim();
+      const direccion = document.getElementById('cfgDireccion').value.trim();
+      const mensaje_ticket = document.getElementById('cfgMensajeTicket').value.trim();
+
+      try {
+        const res = await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre_negocio, rif, telefono, direccion, mensaje_ticket })
+        });
+        const result = await res.json();
+        if (res.ok) {
+          showToast('Datos del negocio guardados correctamente', 'success');
+        } else {
+          showToast(result.error || 'Error al guardar', 'error');
+        }
+      } catch (err) {
+        showToast('Error de conexión', 'error');
+      }
+    }
+
+    // Cambiar clave de supervisor
+    async function cambiarClaveSupervisor(e) {
+      e.preventDefault();
+      const clave_actual = document.getElementById('cfgClaveActual').value.trim();
+      const nueva_clave = document.getElementById('cfgNuevaClave').value.trim();
+      const confirmar = document.getElementById('cfgConfirmarClave').value.trim();
+
+      if (nueva_clave !== confirmar) {
+        showToast('La nueva clave y su confirmación no coinciden', 'error');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clave_actual, nueva_clave_inventario: nueva_clave })
+        });
+        const result = await res.json();
+        if (res.ok) {
+          showToast('Clave de supervisor actualizada con éxito', 'success');
+          document.getElementById('formClave').reset();
+        } else {
+          showToast(result.error || 'Clave actual incorrecta', 'error');
+        }
+      } catch (err) {
+        showToast('Error de conexión', 'error');
+      }
+    }
+
+    // Enviar copia a la nube manual
+    async function enviarCopiaNubeManual() {
+      const btnText = document.getElementById('btnTelegramText');
+      if (btnText) btnText.innerText = 'Enviando a la nube...';
+
+      try {
+        const res = await fetch('/api/backup/telegram', {
+          method: 'POST'
+        });
+        const result = await res.json();
+        if (res.ok) {
+          showToast('¡Respaldo enviado a la nube con éxito!', 'success');
+        } else {
+          showToast(result.error || 'Fallo al enviar a la nube', 'error');
+        }
+      } catch (err) {
+        showToast('Error de red al conectar con el servidor', 'error');
+      } finally {
+        if (btnText) btnText.innerText = 'Enviar Copia a la Nube Ahora';
+      }
+    }
+  </script>
+</body>
+</html>
