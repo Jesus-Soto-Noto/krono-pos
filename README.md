@@ -70,4 +70,4 @@ docker run -p 5000:5000 -e KRONO_SUPERVISOR_PIN=1234 krono-pos
 ## Autor
 
 Desarrollado por **Jesús A. Soto Noto** — Desarrollador de Software Full Stack  
-[LinkedIn](https://www.linkedin.com/in/jesus-soto-noto) · [GitHub](https://github.com/Jesus-Soto-Noto)
+[LinkedIn](https://www.linkedin.com/in/jes%C3%BAs-a-soto-noto-633204220/) · [GitHub](https://github.com/Jesus-Soto-Noto)
